@@ -1,0 +1,196 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-tun
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8s-tun
+rules:
+  - apiGroups:
+      - ""
+    resourceNames:
+      - k8s-tun-active-ips
+      - k8s-tun
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - create
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - nodes
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - crd.projectcalico.org
+    resources:
+      - ippools
+    verbs:
+      - get
+      - list
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-tun
+  namespace: k8s-tun
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8s-tun-active-ips
+  namespace: k8s-tun
+
+---
+# [ "-S", "-l", ":3001", "-c", "10.99.99.1/24", "-k", "123456", "-p", "ws" ]
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8s-tun
+  namespace: k8s-tun
+data:
+  K8S_TUN_CIDR: "10.99.98.1/23"
+  K8S_TUN_KEY: "123456"
+  K8S_TUN_PROTOCOL: "ws"
+  K8S_TUN_WEBSOCKET_PATH: "/freedom"
+  K8S_TUN_OBFS: "false"
+  K8S_TUN_IP_TIMEOUT: "15m"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-tun
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: k8s-tun
+subjects:
+  - kind: ServiceAccount
+    name: k8s-tun
+    namespace: k8s-tun
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-tun
+  name: k8s-tun
+  namespace: k8s-tun
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-tun
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: k8s-tun
+    spec:
+      containers:
+        - image: q946666800/vtun-info-server:0.86-3
+          imagePullPolicy: IfNotPresent
+          name: k8s-tun-info-server
+          envFrom:
+            - configMapRef:
+                name: k8s-tun
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          readinessProbe:
+            tcpSocket:
+              port: 3002
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          livenessProbe:
+            tcpSocket:
+              port: 3002
+            initialDelaySeconds: 10
+            periodSeconds: 30
+        - image: q946666800/vtun:0.86-3
+          imagePullPolicy: IfNotPresent
+          name: k8s-tun
+          envFrom:
+            - configMapRef:
+                name: k8s-tun
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          args: [ "-S", "-l", ":3001" ]
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          readinessProbe:
+            tcpSocket:
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          livenessProbe:
+            tcpSocket:
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          securityContext:
+            runAsUser: 0
+            privileged: true
+            capabilities:
+              add: [ "NET_ADMIN" ]
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: k8s-tun
+#      nodeSelector:
+#        kubernetes.io/hostname: uat-ksnode7
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: k8s-tun
+  name: k8s-tun
+  namespace: k8s-tun
+spec:
+  ports:
+    - name: ws
+      nodePort: 30010
+      port: 3001
+      protocol: TCP
+      targetPort: 3001
+    - name: info
+      nodePort: 30011
+      port: 3002
+      protocol: TCP
+      targetPort: 3002
+  selector:
+    app: k8s-tun
+  type: NodePort
