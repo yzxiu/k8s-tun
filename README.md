@@ -22,17 +22,17 @@ Linux & Mac
 # download client
 wget https://github.com/yzxiu/k8s-tun/releases/download/0.86-3/client-darwin-amd64-086-3
 chmod +x client-linux-amd64-086-3
-
+# start client
 sudo ./client-linux-amd64-086-3 -s <k8s-node-ip>:30011
 ```
 
 Windows
-
+```log
 download [client-windows-amd64-086-3.exe](https://github.com/yzxiu/k8s-tun/releases/download/0.86-3/client-windows-amd64-086-3.exe)
-
 install the attached tap-windows-9.24.2-I601-Win10 driver
-
 right click `client-windows-amd64-086-3.exe` and run as administrator
+```
+
 
 
 
