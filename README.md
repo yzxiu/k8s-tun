@@ -33,8 +33,8 @@ install the attached tap-windows-9.24.2-I601-Win10 driver
 right click `client-windows-amd64-086-3.exe` and run as administrator
 ```
 
+### Notice
 
-
-
+Theoretically applicable to all cni plugins.
 
 Tunnel implementation refers to https://github.com/net-byte/vtun
