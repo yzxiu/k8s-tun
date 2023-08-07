@@ -28,12 +28,12 @@ sudo ./client-linux-amd64-086-3 -s <k8s-node-ip>:30011
 ```
 
 Windows
-```log
-// 1
+```shell
+# 1
 download [client-windows-amd64-086-3.exe](https://github.com/yzxiu/k8s-tun/releases/download/0.86-3/client-windows-amd64-086-3.exe)
-// 2
+# 2
 install the attached tap-windows-9.24.2-I601-Win10 driver
-// 3
+# 3
 right click `client-windows-amd64-086-3.exe` and run as administrator
 ```
 
