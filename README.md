@@ -61,7 +61,7 @@ install the attached tap-windows-9.24.2-I601-Win10 driver
 right click `client-windows-amd64-086-3.exe` and run as administrator
 ```
 
-### uninstall
+### Uninstall
 ```bash
 kubectl delete -f https://raw.githubusercontent.com/yzxiu/k8s-tun/master/deploy.yaml
 ```
