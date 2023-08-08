@@ -54,9 +54,9 @@ PING 10.233.114.158 (10.233.114.158) 56(84) bytes of data.
 Windows (alpha)
 ```shell
 # 1
-download [client-windows-amd64-086-3.exe](https://github.com/yzxiu/k8s-tun/releases/download/0.86-3/client-windows-amd64-086-3.exe)
+download client-windows-amd64-086-3.exe
 # 2
-install the attached tap-windows-9.24.2-I601-Win10 driver
+install the tap-windows-9.24.2-I601-Win10 driver
 # 3
 right click `client-windows-amd64-086-3.exe` and run as administrator
 ```
