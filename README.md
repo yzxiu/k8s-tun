@@ -28,8 +28,11 @@ sudo ./client-linux-amd64-086-3 -s <k8s-node-ip>:30011
 ```
 or, use docker to start the client
 ```bash
-docker run --rm -it --name k8s-tun-client --network=host --cap-add NET_ADMIN --device=/dev/net/tun q946666800/k8s-tun-client:20230808-
-100633 -s <k8s-node-ip>:30011
+docker run --rm -it --name k8s-tun-client \
+  --network=host --cap-add NET_ADMIN \
+  --device=/dev/net/tun \
+  q946666800/k8s-tun-client:0.86 \
+  -s <k8s-node-ip>:30011
 ```
 
 Windows
