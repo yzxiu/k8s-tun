@@ -14,6 +14,13 @@ Access k8s pod ip, service ip
 kubectl apply -f https://raw.githubusercontent.com/yzxiu/k8s-tun/master/deploy.yaml
 ```
 
+view the deployment
+```log
+~ kubectl get pod -n k8s-tun -o wide
+NAME                       READY   STATUS    RESTARTS       AGE     IP               NODE          
+k8s-tun-54b5865fdc-sz48s   2/2     Running   15 (72m ago)   4d20h   10.233.114.158   ubuntu2004-34 
+```
+
 **client**
 
 Linux & Mac
@@ -35,6 +42,15 @@ docker run --rm -it --name k8s-tun-client \
   -s <k8s-node-ip>:30011
 ```
 
+when the client starts successfully, you can directly access the pod ip & svc ip
+```log
+~ ping 10.233.114.158
+PING 10.233.114.158 (10.233.114.158) 56(84) bytes of data.
+64 bytes from 10.233.114.158: icmp_seq=2 ttl=64 time=75.4 ms
+64 bytes from 10.233.114.158: icmp_seq=3 ttl=64 time=50.0 ms
+64 bytes from 10.233.114.158: icmp_seq=5 ttl=64 time=49.6 ms
+```
+
 Windows
 ```shell
 # 1
@@ -43,6 +59,11 @@ download [client-windows-amd64-086-3.exe](https://github.com/yzxiu/k8s-tun/relea
 install the attached tap-windows-9.24.2-I601-Win10 driver
 # 3
 right click `client-windows-amd64-086-3.exe` and run as administrator
+```
+
+### uninstall
+```bash
+kubectl delete -f https://raw.githubusercontent.com/yzxiu/k8s-tun/master/deploy.yaml
 ```
 
 ### Notice
