@@ -51,7 +51,7 @@ PING 10.233.114.158 (10.233.114.158) 56(84) bytes of data.
 64 bytes from 10.233.114.158: icmp_seq=5 ttl=64 time=49.6 ms
 ```
 
-Windows
+Windows (alpha)
 ```shell
 # 1
 download [client-windows-amd64-086-3.exe](https://github.com/yzxiu/k8s-tun/releases/download/0.86-3/client-windows-amd64-086-3.exe)
